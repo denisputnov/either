@@ -2,31 +2,22 @@ name: Package deploy
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
+
 jobs:
-  build:
+  check-and-publish:
+    name: "Check and Publish"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - name: "Checkout source code"
+        uses: actions/checkout@v2
+      - name: "Setup Node.js"
+        uses: actions/setup-node@v1
         with:
           node-version: 20
-      - run: npm ci
-  publish-gpr:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 20
-          registry-url: https://npm.pkg.github.com/
-          scope: "@denisputnov"
-      - run: npm install
-      - run: git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com" && git config --global user.name "$GITHUB_ACTOR"
-      - run: npm version --minor
-      - run: git push --tags && git push
-      - run: npm publish
+          registry-url: https://registry.npmjs.org/
+      - name: "Install dependencies"
+        run: npm install
+      - name: "NPM publish"
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
