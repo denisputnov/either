@@ -1,0 +1,10 @@
+*.js
+*.log
+.DS_Store
+.idea/
+
+dist
+node_modules
+npm-debug.log
+
+**/tsconfig.json
